@@ -208,6 +208,51 @@ double PointProcess_Sound_getShimmer_apq11 (PointProcess me, Sound thee, double 
 		}
 	}
 }
+double PointProcess_getJitter_ppq11 (PointProcess me, double tmin, double tmax,
+                                    double pmin, double pmax, double maximumPeriodFactor)
+{
+    Function_unidirectionalAutowindow (me, & tmin, & tmax);
+    integer imin, imax;
+    integer numberOfPeriods = PointProcess_getWindowPoints (me, tmin, tmax, & imin, & imax) - 1;
+    if (numberOfPeriods < 11) return undefined;
+    longdouble sum = 0.0;
+    for (integer i = imin + 11; i <= imax; i ++) {
+        const double
+        p1 = my t [i - 10] - my t [i - 11],
+        p2 = my t [i - 9] - my t [i - 10],
+        p3 = my t [i - 8] - my t [i - 9],
+        p4 = my t [i - 7] - my t [i - 8],
+        p5 = my t [i - 6] - my t [i - 7],
+        p6 = my t [i - 5] - my t [i - 6],
+        p7 = my t [i - 4] - my t [i - 5],
+        p8 = my t [i - 3] - my t [i - 4],
+        p9 = my t [i - 2] - my t [i - 3],
+        p10 = my t [i - 1] - my t [i - 2],
+        p11 = my t [i] - my t [i - 1];
+        const double
+        f1 = p1 > p2 ? p1 / p2 : p2 / p1,
+        f2 = p2 > p3 ? p2 / p3 : p3 / p2,
+        f3 = p3 > p4 ? p3 / p4 : p4 / p3,
+        f4 = p4 > p5 ? p4 / p5 : p5 / p4,
+        f5 = p5 > p6 ? p5 / p6 : p6 / p5,
+        f6 = p6 > p7 ? p6 / p7 : p7 / p6,
+        f7 = p7 > p8 ? p7 / p8 : p8 / p7,
+        f8 = p8 > p9 ? p8 / p9 : p9 / p8,
+        f9 = p9 > p10 ? p9 / p10 : p10 / p9,
+        f10 = p10 > p11 ? p10 / p11 : p11 / p10;
+        if (pmin == pmax || (p1 >= pmin && p1 <= pmax && p2 >= pmin && p2 <= pmax && p3 >= pmin && p3 <= pmax &&
+                             p4 >= pmin && p4 <= pmax && p5 >= pmin && p5 <= pmax && p6 >= pmin && p6 <= pmax && p7 >= pmin && p7 <= pmax && p8 >= pmin && p8 <= pmax &&
+                             p9 >= pmin && p9 <= pmax && p10 >= pmin && p10 <= pmax && p11 >= pmin && p11 <= pmax &&
+                             f1 <= maximumPeriodFactor && f2 <= maximumPeriodFactor && f3 <= maximumPeriodFactor && f4 <= maximumPeriodFactor && f5 <= maximumPeriodFactor && f6 <= maximumPeriodFactor && f7 <= maximumPeriodFactor && f8 <= maximumPeriodFactor && f9 <= maximumPeriodFactor && f10 <= maximumPeriodFactor))
+        {
+            sum += fabs (p6 - (p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9 + p10 + p11) / 11.0);
+        } else {
+            numberOfPeriods --;
+        }
+    }
+    if (numberOfPeriods < 11) return undefined;
+    return double (sum / (numberOfPeriods - 10)) / PointProcess_getMeanPeriod (me, tmin, tmax, pmin, pmax, maximumPeriodFactor);
+}
 
 double PointProcess_Sound_getShimmer_dda (PointProcess me, Sound thee, double tmin, double tmax,
 	double pmin, double pmax, double maximumPeriodFactor, double maximumAmplitudeFactor)
