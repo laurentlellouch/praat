@@ -28,6 +28,8 @@ double PointProcess_getJitter_rap (PointProcess me, double tmin, double tmax,
 	double minimumPeriod, double maximumPeriod, double maximumPeriodFactor);
 double PointProcess_getJitter_ppq5 (PointProcess me, double tmin, double tmax,
 	double minimumPeriod, double maximumPeriod, double maximumPeriodFactor);
+double PointProcess_getJitter_ppq11 (PointProcess me, double tmin, double tmax,
+	double minimumPeriod, double maximumPeriod, double maximumPeriodFactor);
 double PointProcess_getJitter_ddp (PointProcess me, double tmin, double tmax,
 	double minimumPeriod, double maximumPeriod, double maximumPeriodFactor);
 
